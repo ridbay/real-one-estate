@@ -1,14 +1,17 @@
-//FILENAME : db.js
-
+const config = require("./db.config")
 const mongoose = require("mongoose");
 
-// Replace this with your MONGOURI.
-const MONGOURI = "mongodb://testuser:testpassword@ds257698.mlab.com:57698/real-estate";
+//Remove MongoDB warning error
+mongoose.set("useCreateIndex", true);
+
+mongoose.Promise = global.Promise;
 
 const InitiateMongoServer = async () => {
   try {
-    await mongoose.connect(MONGOURI, {
-      useNewUrlParser: true
+    await mongoose.connect(config.URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology:true,
+      useFindAndModify: true
     });
     console.log("Connected to DB !!");
   } catch (e) {

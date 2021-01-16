@@ -21,6 +21,9 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Welcome to real one estate." });
 });
 
+
+require("./routes/user.route")(app);
+
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
