@@ -1,6 +1,9 @@
 const user = require("../controllers/user.controller");
-const { check, validationResult } = require("express-validator");
-const validateReqBody = require("../middleware/validateReqBody")
+const { check } = require("express-validator");
+const validateReqBody = require("../middleware/validateReqBody");
+const validateJWT = require("../middleware/auth");
+const validateEmailOrUsername = require("../middleware/validateEmailUsername")
+
 module.exports = (app) => {
   //Define the routes
   app.post(
@@ -14,7 +17,9 @@ module.exports = (app) => {
       }),
     ],
     validateReqBody,
+    validateEmailOrUsername,
     user.signup
   );
-  app.post("/api/v1/signin", user.signin);
+  app.post("/api/v1/signin",user.signin);
+  app.get("/api/v1/me", validateJWT,user.me);
 };

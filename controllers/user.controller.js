@@ -39,12 +39,13 @@ exports.signup = async (req, res) => {
       const savedUser = await user.save();
 
       res.status(201).json({
-        message: "User successfully created!",
+        message: "User successfully registered!",
         data: savedUser,
       });
       const payload = {
         user: {
           id: user.id,
+          email: user.email,
         },
       };
       jwt.sign(
@@ -90,9 +91,16 @@ exports.signin = async (req, res) => {
         return res.status(400).json({
           message: "Incorrect Login Credentials!",
         });
-      let token = jwt.sign(JSON.parse(JSON.stringify(user)), "ridwan", {
-        expiresIn: 86400 * 30,
-      });
+      let token = jwt.sign(
+        {
+          email: user.email,
+          userId: user.id,
+        },
+        "ridwan",
+        {
+          expiresIn: 86400 * 30,
+        }
+      );
 
       return res.status(200).json({
         token: token,
@@ -106,4 +114,9 @@ exports.signin = async (req, res) => {
       });
     }
   }
+};
+
+exports.me = async (req, res) => {
+   
+  res.status(200).send({ msg: "This is me", email: req.email });
 };
