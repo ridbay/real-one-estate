@@ -9,9 +9,10 @@ module.exports = (app) => {
   app.post(
     "/api/v1/signup",
     [
-      check("name", "Please Enter a Valid Name").not().isEmpty(),
+      check("fullname", "Please Enter a Valid Full Name").not().isEmpty(),
       check("username", "Please Enter a Valid Username").not().isEmpty(),
       check("email", "Please enter a valid email").isEmail(),
+      check("userType", "Please enter a valid user type").not().isEmpty(),
       check("password", "Please enter a valid password").isLength({
         min: 8,
       }),

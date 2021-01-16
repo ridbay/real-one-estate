@@ -6,17 +6,18 @@ const bcrypt = require("bcryptjs");
 
 exports.signup = async (req, res) => {
   if (
-    !req.body.name ||
+    !req.body.fullname ||
     !req.body.username ||
-    !req.body.name ||
+    !req.body.email ||
+    !req.body.userType ||
     !req.body.password
   ) {
     res
       .status(400)
-      .send({ msg: "Please pass name,username, email and password." });
+      .json({ msg: "Please pass fullname ,username, email, user type and password." });
   } else {
     try {
-      const { name, username, email, password } = req.body;
+      const { fullname, username, email, password,userType } = req.body;
       //Check if the email already exist in the database
       let user = await User.findOne({
         email,
@@ -30,17 +31,25 @@ exports.signup = async (req, res) => {
       //If user doesn't exist, create a new user
       user = new User({
         username,
-        name,
+        fullname,
         email,
         password,
+        userType
       });
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
       const savedUser = await user.save();
+      const sendUser = {
+        "username": savedUser.username,
+        "fullname": savedUser.fullname,
+        "email": savedUser.email,
+        "userType": savedUser.userType,
+        "id": savedUser.id
+      }
 
       res.status(201).json({
         message: "User successfully registered!",
-        data: savedUser,
+        data: sendUser,
       });
       const payload = {
         user: {
