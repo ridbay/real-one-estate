@@ -13,10 +13,11 @@ const InitiateMongoServer = async () => {
       useUnifiedTopology:true,
       useFindAndModify: true
     });
-    console.log("Connected to DB !!");
+    console.log("Connected to DB!!!");
   } catch (e) {
-    console.log(e);
-    throw e;
+    console.log("Can not connect to DB!!!");
+    process.exit()
+    // throw e;
   }
 };
 
