@@ -12,12 +12,12 @@ exports.signup = async (req, res) => {
     !req.body.userType ||
     !req.body.password
   ) {
-    res
-      .status(400)
-      .json({ msg: "Please pass fullname ,username, email, user type and password." });
+    res.status(400).json({
+      msg: "Please pass fullname ,username, email, user type and password.",
+    });
   } else {
     try {
-      const { fullname, username, email, password,userType } = req.body;
+      const { fullname, username, email, password, userType } = req.body;
       //Check if the email already exist in the database
       let user = await User.findOne({
         email,
@@ -34,18 +34,18 @@ exports.signup = async (req, res) => {
         fullname,
         email,
         password,
-        userType
+        userType,
       });
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
       const savedUser = await user.save();
       const sendUser = {
-        "username": savedUser.username,
-        "fullname": savedUser.fullname,
-        "email": savedUser.email,
-        "userType": savedUser.userType,
-        "id": savedUser.id
-      }
+        username: savedUser.username,
+        fullname: savedUser.fullname,
+        email: savedUser.email,
+        userType: savedUser.userType,
+        id: savedUser.id,
+      };
 
       res.status(201).json({
         message: "User successfully registered!",
@@ -83,7 +83,9 @@ exports.signup = async (req, res) => {
 exports.signin = async (req, res) => {
   // Validate request
   if (!req.body.email || !req.body.password) {
-    res.status(400).send({ msg: "Please pass username and password." });
+    res
+      .status(400)
+      .send({ status: false, message: "Please pass username and password." });
   } else {
     const { email, password } = req.body;
     try {
@@ -92,12 +94,14 @@ exports.signin = async (req, res) => {
       });
       if (!user)
         return res.status(400).json({
+          status: false,
           message: "Authentication failed. User not found.",
         });
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch)
         return res.status(400).json({
+          status: false,
           message: "Incorrect Login Credentials!",
         });
       let token = jwt.sign(
@@ -110,14 +114,21 @@ exports.signin = async (req, res) => {
           expiresIn: 86400 * 30,
         }
       );
-
+      const loggedInUser = {
+        id: user.id,
+        username: user.test,
+        fullname: user.fullname,
+        email: user.email,
+        userType: user.userType,
+      };
       return res.status(200).json({
+        status: true,
         token: token,
-        data: user,
+        data: loggedInUser,
       });
     } catch (error) {
-      console.error(error);
       res.status(500).json({
+        status: false,
         message: "Server Error",
         data: error,
       });
@@ -126,6 +137,5 @@ exports.signin = async (req, res) => {
 };
 
 exports.me = async (req, res) => {
-   
   res.status(200).send({ msg: "This is me", email: req.email });
 };
