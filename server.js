@@ -1,6 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const InitiateMongoServer = require("./config/db");
+
+// Initiate Mongo Server
+InitiateMongoServer();
 
 const app = express();
 
