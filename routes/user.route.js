@@ -12,7 +12,7 @@ module.exports = (app) => {
       check("fullname", "Please Enter a Valid Full Name").not().isEmpty(),
       check("username", "Please Enter a Valid Username").not().isEmpty(),
       check("email", "Please enter a valid email").isEmail(),
-      check("userType", "Please enter a valid user type").not().isEmpty(),
+      check("accountType", "Please enter a valid account Type").not().isEmpty(),
       check("password", "Please enter a valid password").isLength({
         min: 8,
       }),

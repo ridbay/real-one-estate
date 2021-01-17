@@ -9,7 +9,7 @@ exports.signup = async (req, res) => {
     !req.body.fullname ||
     !req.body.username ||
     !req.body.email ||
-    !req.body.userType ||
+    !req.body.accountType ||
     !req.body.password
   ) {
     res.status(400).json({
@@ -17,7 +17,7 @@ exports.signup = async (req, res) => {
     });
   } else {
     try {
-      const { fullname, username, email, password, userType } = req.body;
+      const { fullname, username, email, password, accountType } = req.body;
       //Check if the email already exist in the database
       let user = await User.findOne({
         email,
@@ -34,7 +34,7 @@ exports.signup = async (req, res) => {
         fullname,
         email,
         password,
-        userType,
+        accountType,
       });
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
@@ -43,7 +43,7 @@ exports.signup = async (req, res) => {
         username: savedUser.username,
         fullname: savedUser.fullname,
         email: savedUser.email,
-        userType: savedUser.userType,
+        accountType: savedUser.accountType,
         id: savedUser.id,
       };
 
@@ -119,7 +119,7 @@ exports.signin = async (req, res) => {
         username: user.test,
         fullname: user.fullname,
         email: user.email,
-        userType: user.userType,
+        accountType: user.accountType,
       };
       return res.status(200).json({
         status: true,

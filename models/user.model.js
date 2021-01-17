@@ -20,10 +20,47 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  userType: {
+  accountType: {
     type: String,
     required: true,
   },
+  company: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
+  locality: {
+    type: String,
+  },
+  state: {
+    type: String,
+  },
+  country: {
+    type: String,
+  },
+  phone1: {
+    type: String,
+  },
+  phone2: {
+    type: String,
+  },
+  services: {
+    type: String,
+  },
+  facebook: {
+    type: String,
+  },
+  instagram: {
+    type: String,
+  },
+  twitter: {
+    type: String,
+  },
+  linkedin: {
+    type: String,
+  },
+
   createdAt: {
     type: Date,
     default: Date.now(),
