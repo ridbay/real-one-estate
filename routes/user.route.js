@@ -5,7 +5,6 @@ const validateJWT = require("../middleware/auth");
 const validateEmailOrUsername = require("../middleware/validateEmailUsername")
 
 module.exports = (app) => {
-  //Define the routes
   app.post(
     "/api/v1/signup",
     [
@@ -22,5 +21,6 @@ module.exports = (app) => {
     user.signup
   );
   app.post("/api/v1/signin",user.signin);
-  app.get("/api/v1/me", validateJWT,user.me);
+  app.get("/api/v1/me", validateJWT,user.profile);
+  app.put("/api/v1/me", validateJWT,user.updateProfile);
 };

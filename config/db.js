@@ -2,9 +2,11 @@ const config = require("./db.config")
 const mongoose = require("mongoose");
 
 //Remove MongoDB warning error
-mongoose.set("useCreateIndex", true);
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false);
 
-mongoose.Promise = global.Promise;
+// mongoose.Promise = global.Promise;
 
 const InitiateMongoServer = async () => {
   try {

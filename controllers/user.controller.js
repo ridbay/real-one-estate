@@ -1,6 +1,7 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const { cookie } = require("express-validator");
 
 // Sign up and Save a new User
 
@@ -19,9 +20,9 @@ exports.signup = async (req, res) => {
     try {
       const { fullname, username, email, password, accountType } = req.body;
       //Check if the email already exist in the database
-      let user = await User.findOne({
+      const user = await User.findOne({
         email,
-      });
+      }).exec();
       if (user) {
         //If user exists, send a message back
         return res.status(400).json({
@@ -89,14 +90,9 @@ exports.signin = async (req, res) => {
   } else {
     const { email, password } = req.body;
     try {
-      let user = await User.findOne({
+      const user = await User.findOne({
         email,
-      });
-      if (!user)
-        return res.status(400).json({
-          status: false,
-          message: "Authentication failed. User not found.",
-        });
+      }).exec();
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch)
@@ -136,6 +132,125 @@ exports.signin = async (req, res) => {
   }
 };
 
-exports.me = async (req, res) => {
-  res.status(200).send({ msg: "This is me", email: req.email });
+exports.profile = async (req, res) => {
+  if (!req.body) {
+    return res.status(400).send({
+      message: "Data to update can not be empty!",
+    });
+  } else {
+    try {
+      const userId = req.userId;
+      const user = await User.findById(userId).exec();
+      // const user = query.exec();
+      const sendUser = {
+        username: user.username,
+        fullname: user.fullname,
+        email: user.email,
+        accountType: user.accountType,
+        company: user.company,
+        address: user.address,
+        locality: user.locality,
+        state: user.state,
+        country: user.country,
+        phone1: user.phone1,
+        phone2: user.phone2,
+        services: user.services,
+        facebook: user.facebook,
+        instagram: user.instagram,
+        twitter: user.twitter,
+        linkedin: user.linkedin,
+      };
+      if (!user) {
+        res.status(404).json({
+          status: false,
+          message: "User records not found",
+        });
+      } else {
+        res.status(200).json({
+          status: false,
+          message: "User records found",
+          data: sendUser,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        status: false,
+        message: "Server Error",
+        data: error,
+      });
+    }
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  if (!req.body) {
+    return res.status(400).send({
+      message: "Data to update can not be empty!",
+    });
+  } else {
+   
+    try {
+      const {
+        fullname,
+        accountType,
+        company,
+        address,
+        locality,
+        state,
+        country,
+        phone1,
+        phone2,
+        services,
+        facebook,
+        instagram,
+        twitter,
+        linkedin,
+      } = req.body;
+      const data = {
+        fullname,
+        accountType,
+        company,
+        address,
+        locality,
+        state,
+        country,
+        phone1,
+        phone2,
+        services,
+        facebook,
+        instagram,
+        twitter,
+        linkedin,
+      };
+      const userId = req.userId;
+      const user = await User.findByIdAndUpdate(userId, data);
+      const sendUser = {
+        username:user.username,
+        fullname: user.fullname,
+        accountType: user.accountType,
+        company: user.company,
+        address: user.address,
+        locality: user.locality,
+        state: user.state,
+        country: user.country,
+        phone1: user.phone1,
+        phone2: user.phone2,
+        services: user.services,
+        facebook: user.facebook,
+        instagram: user.instagram,
+        twitter: user.twitter,
+        linkedin: user.linkedin,
+      };
+      return res.status(201).json({
+        status: true,
+        message: "User profile updated successfully",
+        data: sendUser,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: false,
+        message: "Error",
+      });
+    }
+  }
 };
