@@ -25,7 +25,7 @@ module.exports = checkDuplicateUsernameOrEmail = async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({
       status: false,
-      message: error
+      message: "Server error validating username or email"
     });
   }
 };

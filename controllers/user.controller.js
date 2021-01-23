@@ -30,7 +30,7 @@ exports.signup = async (req, res) => {
         });
       }
       //If user doesn't exist, create a new user
-      user = new User({
+     const newUser = new User({
         username,
         fullname,
         email,
@@ -38,8 +38,8 @@ exports.signup = async (req, res) => {
         accountType,
       });
       const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
-      const savedUser = await user.save();
+     newUser.password = await bcrypt.hash(password, salt);
+      const savedUser = await newUser.save();
       const sendUser = {
         username: savedUser.username,
         fullname: savedUser.fullname,
@@ -47,18 +47,13 @@ exports.signup = async (req, res) => {
         accountType: savedUser.accountType,
         id: savedUser.id,
       };
-
-      res.status(201).json({
-        message: "User successfully registered!",
-        data: sendUser,
-      });
       const payload = {
         user: {
-          id: user.id,
-          email: user.email,
+          id: savedUser.id,
+          email: savedUser.email,
         },
       };
-      jwt.sign(
+     jwt.sign(
         payload,
         "ridwan",
         {
@@ -66,15 +61,19 @@ exports.signup = async (req, res) => {
         },
         (err, token) => {
           if (err) throw err;
-          res.status(200).json({
+          res.status(201).json({
+            message: "User successfully registered!",
+            data: sendUser,
             token,
           });
         }
       );
+     
     } catch (error) {
-      return res.status(500).json({
+      console.log(error)
+      return res.json({
         message: "something went wrong",
-        data: error,
+        data: error.message,
       });
     }
   }
@@ -125,7 +124,7 @@ exports.signin = async (req, res) => {
     } catch (error) {
       res.status(500).json({
         status: false,
-        message: "Server Error",
+        message: "Server Error Signin In",
         data: error,
       });
     }
@@ -175,7 +174,7 @@ exports.profile = async (req, res) => {
     } catch (error) {
       res.status(500).json({
         status: false,
-        message: "Server Error",
+        message: "Server Error Getting profile",
         data: error,
       });
     }
@@ -249,7 +248,7 @@ exports.updateProfile = async (req, res) => {
     } catch (error) {
       return res.status(500).json({
         status: false,
-        message: "Error",
+        message: "Error Updating user profile",
       });
     }
   }
