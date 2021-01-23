@@ -1,33 +1,28 @@
 const mongoose = require("mongoose");
-const uniqueValidator = require("mongoose-unique-validator");
 
 const Schema = mongoose.Schema;
-const UserSchema = new Schema({
-  username: {
+const PropertySchema = new Schema({
+  title: {
     type: String,
     required: true,
   },
-  fullname: {
+  publishedStatus: {
+    type: Boolean,
+    required: true,
+  },
+  marketStatus: {
     type: String,
     required: true,
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
+  category: {
     type: String,
     required: true,
   },
-  accountType: {
+  type: {
     type: String,
     required: true,
   },
-  company: {
-    type: String,
-  },
-  address: {
+  location: {
     type: String,
   },
   locality: {
@@ -36,47 +31,58 @@ const UserSchema = new Schema({
   state: {
     type: String,
   },
-  country: {
+  area: {
     type: String,
   },
-  phone1: {
+  budget: {
     type: String,
   },
-  phone2: {
+  bedroom: {
     type: String,
   },
-  services: {
+  toilet: {
     type: String,
   },
-  facebook: {
+  bathroom: {
     type: String,
   },
-  instagram: {
+  parking: {
     type: String,
   },
-  twitter: {
+  totalArea: {
     type: String,
   },
-  linkedin: {
+  video: {
     type: String,
   },
-  properties: [{ 
+  image: {
+    type: String,
+  },
+  serviced: {
+    type: String,
+  },
+  furnished: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
+  user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Property"
- }],
+    ref: "User"
+ },
   createdAt: {
     type: Date,
     default: Date.now(),
   },
 });
 
-UserSchema.plugin(uniqueValidator, { message: "Email already in Use" });
 
-UserSchema.method("toJSON", function () {
+PropertySchema.method("toJSON", function () {
   const { _v, _id, ...object } = this.toObject();
   object.id = _id;
   return object;
 });
 
-// export model user with UserSchema
-module.exports = mongoose.model("user", UserSchema);
+// export model Property with PropertySchema
+module.exports = mongoose.model("property", PropertySchema);
