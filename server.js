@@ -21,6 +21,7 @@ app.get("/", (req, res) => {
 });
 
 require("./routes/user.route")(app);
+require("./routes/property.route")(app);
 
 app.all("*",(req,res)=>{
   res.send("Invalid Route")
